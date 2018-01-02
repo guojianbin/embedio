@@ -297,7 +297,11 @@
             {
                 try
                 {
+#if !NET47
+                    var clientSocket = await Listener.GetContextAsync(ct).ConfigureAwait(false);
+#else
                     var clientSocket = await Listener.GetContextAsync().ConfigureAwait(false);
+#endif
                     if (ct.IsCancellationRequested)
                         return;
 

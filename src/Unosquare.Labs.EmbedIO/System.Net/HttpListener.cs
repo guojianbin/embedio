@@ -33,6 +33,7 @@ namespace Unosquare.Net
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -214,9 +215,9 @@ namespace Unosquare.Net
         /// Gets the HTTP context asynchronously.
         /// </summary>
         /// <returns>A task that represents the time delay for the httpListenerContext</returns>
-        public async Task<HttpListenerContext> GetContextAsync()
+        public async Task<HttpListenerContext> GetContextAsync(CancellationToken ct)
         {
-            while (true)
+            while (!ct.IsCancellationRequested)
             {
                 foreach (var key in _ctxQueue.Keys)
                 {
@@ -226,6 +227,8 @@ namespace Unosquare.Net
 
                 await Task.Delay(10);
             }
+
+            return null;
         }
 
         internal void RegisterContext(HttpListenerContext context)
